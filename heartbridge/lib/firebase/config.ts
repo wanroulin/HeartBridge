@@ -1,7 +1,13 @@
+'use client';
+
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+
+console.log('API Key:', process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+console.log('Auth Domain:', process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN);
+console.log('Project ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

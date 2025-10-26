@@ -1,4 +1,4 @@
-'use clint';
+'use client';
 
 import React, {createContext, useContext, useState, useEffect } from "react";
 import { User as FirebaseUser } from 'firebase/auth';
