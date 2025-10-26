@@ -1,0 +1,94 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.md {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.lg {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.primary {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+}
+
+.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.secondary:hover {
+  background-color: var(--border-color);
+}
+
+.parent {
+  background-color: #5B7A92;
+  color: white;
+}
+
+.parent:hover {
+  background-color: #4A6578;
+}
+
+.teen {
+  background-color: #A88968;
+  color: white;
+}
+
+.teen:hover {
+  background-color: #8F7355;
+}
+
+.success {
+  background-color: var(--success);
+  color: white;
+}
+
+.success:hover {
+  background-color: #45a049;
+}
+
+.error {
+  background-color: var(--error);
+  color: white;
+}
+
+.error:hover {
+  background-color: #da190b;
+}
+
+.warning {
+  background-color: var(--warning);
+  color: white;
+}
+
+.warning:hover {
+  background-color: #e68900;
+}

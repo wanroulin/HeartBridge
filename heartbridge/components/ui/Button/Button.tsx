@@ -2,7 +2,7 @@
 
 import { size } from 'zod';
 import React from 'react';
-import styles from '../Button.module.css';
+import styles from './Button.module.css';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
