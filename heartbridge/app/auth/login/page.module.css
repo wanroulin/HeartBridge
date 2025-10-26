@@ -1,0 +1,139 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 1rem;
+}
+
+.card {
+    width: 100%;
+    max-width: 420px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.alert {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #FEE;
+    border: 1px solid var(--error);
+    border-radius: var(--radius-md);
+    color: var(--error);
+}
+
+.alertText {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+}
+
+.dividerLine {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.googleIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.signupLink {
+    text-align: center;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 0.875rem;
+}
+
+.signupLinkText {
+    color: var(--primary);
+    font-weight: 600;
+    transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.signupLinkText:hover {
+    color: var(--primary-hover);
+}
+
+.footer {
+    text-align: center;
+    font-size: 0.875rem !important;
+    margin-bottom: 0 !important;
+}
+
+.footerLink {
+    color: var(--primary);
+    font-weight: 500;
+    transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.footerLink:hover {
+    color: var(--primary-hover);
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+    }
+}
