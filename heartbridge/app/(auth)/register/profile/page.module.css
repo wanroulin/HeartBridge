@@ -1,0 +1,259 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 1rem;
+}
+
+.content {
+    width: 100%;
+    max-width: 600px;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.9;
+}
+
+.card {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.alert {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #FEE;
+    border: 1px solid var(--error);
+    border-radius: var(--radius-md);
+}
+
+.alertText {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--error);
+}
+
+.roleGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.roleCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.roleCard:hover {
+    border-color: var(--primary);
+}
+
+.roleCard.selected {
+    border-color: var(--primary);
+    background-color: var(--bg-tertiary);
+}
+
+.roleIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    background-color: var(--primary);
+    border-radius: var(--radius-md);
+    color: var(--text-inverse);
+    opacity: 0.8;
+}
+
+.roleCardTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.roleCardText {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.infoBox {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: var(--bg-tertiary);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+}
+
+.infoBoxText {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.backLink {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.backLinkText {
+    color: var(--primary);
+    font-weight: 600;
+    transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.backLinkText:hover {
+    color: var(--primary-hover);
+}
+
+.terms {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.termsLink {
+    color: var(--primary);
+    font-weight: 600;
+    transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.termsLink:hover {
+    color: var(--primary-hover);
+}
+
+.birthDate {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.birthDateLabel {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.birthDateInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .roleGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .birthDateInputs {
+        grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+}
