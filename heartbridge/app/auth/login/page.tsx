@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import styles from './page.module.css';
-import { Heart, Mail, Lock, Loader } from 'lucide-react';
+import { Heart, Loader } from 'lucide-react';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
