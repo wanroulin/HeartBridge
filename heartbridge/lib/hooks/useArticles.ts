@@ -44,7 +44,7 @@ export function useArticles(options: UseArticlesOptions = {}) {
                 const constraints: QueryConstraint[] = [orderBy('createAt', 'desc'), limit(pageSize)];
 
                 if (filters?.role) {
-                    constraints.push(where('authoeName', '==', filters.role));
+                    constraints.push(where('authorName', '==', filters.role));
                 }
 
                 const q = query(collection(db, 'articles'), ...constraints);

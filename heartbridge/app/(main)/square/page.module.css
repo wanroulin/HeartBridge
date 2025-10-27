@@ -20,9 +20,10 @@
 }
 
 .articlesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 .articleCard {
@@ -94,7 +95,6 @@
 }
 
 .loadingContainer {
-    display: flex;
     align-items: center;
     justify-content: center;
     min-height: 400px;

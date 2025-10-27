@@ -39,10 +39,6 @@ export default function SquarePage () {
             <div className= {styles.header}>
                 <h1>心橋廣場</h1>
                 <p>歡迎分享您的想法與傾聽他人的聲音</p>
-                <Button onClick={() => router.push('/square/new')}>
-                    <Heart size={20} />
-                    分享文章
-                </Button>
             </div>
 
             {/* Articles */}
@@ -52,16 +48,7 @@ export default function SquarePage () {
                 </div>
             )}
 
-            {articles.length === 0 ? (
-                <div className= { styles.empty }>
-                    <Heart size={48} />
-                    <h2>還沒有文章</h2>
-                    <p>成為第一個分享的人吧！</p>
-                    <Button onClick={() => router.push('/square/new')}>
-                        開始分享
-                    </Button>
-                </div>
-            ) : (
+            
                 <div className= { styles.articlesGrid }>
                     { articles.map((article) => (
                         <div key={ article.id } className={ styles.articleCard }>
@@ -76,7 +63,11 @@ export default function SquarePage () {
                         </div>
                     ))}
                 </div>
-            )}
+
+                <Button onClick={() => router.push('/square/new')}>
+                        開始分享
+                    </Button>
+            
         </div>
     );
 }
