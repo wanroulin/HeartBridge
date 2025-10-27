@@ -138,7 +138,7 @@ export function useArticles(options: UseArticlesOptions = {}) {
                     authorId: firebaseUser.uid,
                     likes: 0,
                     commentCount: 0,
-                    createAt: new Date(),
+                    createAt: serverTimestamp(),
                     updateAt: new Date(),
                 };
 

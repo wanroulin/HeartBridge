@@ -14,6 +14,7 @@ import {
     deleteDoc,
     doc,
     QueryConstraint,
+    serverTimestamp
 } from 'firebase/firestore';
 import { Comment } from '@/lib/types';
 import { useAuth } from '@/contexts/AuthContext';
@@ -106,7 +107,7 @@ export function useComments(options: UseCommentsOptions = {}) {
                     authorRole: user.role,
                     content,
                     likes: 0,
-                    createAt: new Date(),
+                    createAt: serverTimestamp(),
                     updateAt: new Date(),
                 };
 

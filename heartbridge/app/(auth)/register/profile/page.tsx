@@ -70,7 +70,7 @@ export default function ProfilePage() {
                 },
                 ageRange,
                 interest: interestList,
-                createAt: new Date(),
+                createAt: serverTimestamp(),
                 updateAt: new Date(),
             };
 
