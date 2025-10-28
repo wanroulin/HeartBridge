@@ -24,7 +24,7 @@ export default function IdentityPage() {
         if (selectedRole) {
             // 將角色保存到 localStorage（臨時方案，之後改成 Context）
             localStorage.setItem('registrationRole', selectedRole);
-            router.push('/auth/register/profile');
+            router.push('/register/profile');
         }
     };
 

@@ -50,7 +50,7 @@ export default function LoginPage() {
         try {
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
-            router.push('/auth/register?step=identity');
+            router.push('/register?step=identity');
         } catch (err: any) {
             setError(err.message || 'Google 登入失敗');
         } finally {

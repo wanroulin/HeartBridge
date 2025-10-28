@@ -33,7 +33,7 @@ export function Sidebar() {
             <div className={ styles.logo }>
                 <Link href='/square'>
                     <Heart size={24} />
-                    <span>心橋</span>
+                    <span>HeartBridge</span>
                 </Link>
             </div>
 
@@ -49,7 +49,7 @@ export function Sidebar() {
             <nav className={ styles.nav }>
                 <Link href = '/square' className = {`${styles.navLink} ${isActive('/square') ? styles.active : ''}`}>
                     <Home size={20} />
-                    <span>廣場</span>
+                    <span>心橋廣場</span>
                 </Link>
 
 

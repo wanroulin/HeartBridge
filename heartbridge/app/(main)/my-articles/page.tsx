@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui';
-import { Heart, Loader, Edit, Trash2 } from 'lucide-react';
+import { Heart, Loader, Edit, Trash2, MessageSquare } from 'lucide-react';
 import { useArticles } from '@/lib/hooks/useArticles';
 import styles from './page.module.css';
 
@@ -15,7 +15,7 @@ export default function MyArticlesPage() {
 
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push('/auth/login');
+            router.push('/login');
         }
     }, [user, authLoading, router]);
 
@@ -78,8 +78,8 @@ export default function MyArticlesPage() {
                                 <h3>{article.title}</h3>
                                 <p>{article.content.substring(0, 150)}...</p>
                                 <div className={styles.meta}>
-                                    <span>📝 {article.commentCount} 則留言</span>
-                                    <span>❤️ {article.likes} 人按讚</span>
+                                    <span> <Heart size={16} /> {article.likes}</span>
+                                    <span> <MessageSquare size={16} /> {article.commentCount}</span>
                                 </div>
                             </div>
                             <div className={styles.actions}>

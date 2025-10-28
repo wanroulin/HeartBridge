@@ -8,11 +8,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useArticles } from '@/lib/hooks/useArticles';
 import { useComments } from '@/lib/hooks/useComments';
 import { db } from '@/lib/firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { Article } from '@/lib/types';
 import { formatDate, formatRelativeTime } from '@/lib/utils/date';
 import { formatRoleName } from '@/lib/utils/format';
-import { Heart, MessageCircle, Share2, Loader, ArrowLeft, Trash2, Edit } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Loader, ArrowLeft, Trash2, Edit, Send } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function ArticleDetailPage() {
@@ -20,14 +20,21 @@ export default function ArticleDetailPage() {
     const articleId = params.id as string;
     const router = useRouter();
     const { user } = useAuth();
-    
+
     const [article, setArticle] = useState<Article | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [commentError, setCommentError] = useState('');
     const { deleteArticle } = useArticles();
-    const { comments, fetchCommentsByArticle } = useComments();
+    const { comments, fetchCommentsByArticle, createComment, deleteComment, likeComment } = useComments();
+
     const [commentText, setCommentText] = useState('');
     const [submittingComment, setSubmittingComment] = useState(false);
+    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+    const [editingContent, setEditingContent] = useState('');
+    const [userLikedComments, setUserLikedComments] = useState<Set<string>>(new Set());
+    const [isLikingArticle, setIsLikingArticle] = useState(false);
+    const [userLikedArticle, setUserLikedArticle] = useState(false);
 
     useEffect(() => {
         fetchArticle();
@@ -80,6 +87,113 @@ export default function ArticleDetailPage() {
             });
         } else {
             alert('複製連結：' + url);
+        }
+    };
+
+    const handleLikeArticle = async () => {
+        if (!article || !user) {
+            setError('請先登入');
+            return;
+        }
+
+        setIsLikingArticle(true);
+        try {
+            const articleRef = doc(db, 'articles', articleId);
+            const newLikeCount = article.likes + (userLikedArticle ? -1 : 1);
+
+            await updateDoc(articleRef, {
+                likes: newLikeCount,
+                updateAt: serverTimestamp(),
+            });
+
+            setArticle({
+                ...article,
+                likes: newLikeCount,
+            });
+
+            setUserLikedArticle(!userLikedArticle);
+        } catch (err) {
+            setError('按讚失敗');
+            console.error(err);
+        } finally {
+            setIsLikingArticle(false);
+        }
+    };
+
+    const handleSubmitComment = async () => {
+        if (!commentText.trim()) {
+            setCommentError('留言不能為空');
+            return;
+        }
+
+        if (!user) {
+            setError('請先登入');
+            return;
+        }
+
+        setSubmittingComment(true);
+        try {
+            await createComment(articleId, commentText);
+
+            // 更新文章的留言計數
+            const articleRef = doc(db, 'articles', articleId);
+            await updateDoc(articleRef, {
+                commentCount: increment(1),
+                updateAt: serverTimestamp(),
+            });
+
+            setCommentText('');
+            setArticle((prev) =>
+                prev ? { ...prev, commentCount: prev.commentCount + 1 } : null
+            );
+        } catch (err) {
+            setCommentError(err instanceof Error ? err.message : '留言提交失敗');
+        } finally {
+            setSubmittingComment(false);
+        }
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        if (confirm('確定要刪除這則留言嗎？')) {
+            try {
+                await deleteComment(commentId);
+
+                // 更新文章的留言計數
+                const articleRef = doc(db, 'articles', articleId);
+                await updateDoc(articleRef, {
+                    commentCount: Math.max(0, (article?.commentCount || 1) - 1),
+                    updateAt: serverTimestamp(),
+                });
+
+                setArticle((prev) =>
+                    prev ? { ...prev, commentCount: Math.max(0, prev.commentCount - 1) } : null
+                );
+            } catch (err) {
+                setCommentError('刪除留言失敗');
+            }
+        }
+    };
+
+    const handleLikeComment = async (commentId: string) => {
+        if (!user) {
+            setError('請先登入');
+            return;
+        }
+
+        try {
+            if (userLikedComments.has(commentId)) {
+                // 已點讚，取消點讚邏輯（可選）
+                setUserLikedComments((prev) => {
+                    const newSet = new Set(prev);
+                    newSet.delete(commentId);
+                    return newSet;
+                });
+            } else {
+                await likeComment(commentId);
+                setUserLikedComments((prev) => new Set([...prev, commentId]));
+            }
+        } catch (err) {
+            setCommentError('操作失敗');
         }
     };
 
@@ -154,7 +268,7 @@ export default function ArticleDetailPage() {
                 {/* Stats */}
                 <div className={styles.stats}>
                     <div className={styles.stat}>
-                        <Heart size={18} />
+                        <Heart size={18} fill={userLikedArticle ? 'currentColor' : 'none'} />
                         <span>{article.likes} 人按讚</span>
                     </div>
                     <div className={styles.stat}>
@@ -165,6 +279,15 @@ export default function ArticleDetailPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
+                    <Button
+                        variant="outline"
+                        size="md"
+                        onClick={handleLikeArticle}
+                        disabled={isLikingArticle}
+                    >
+                        <Heart size={18} fill={userLikedArticle ? 'currentColor' : 'none'} />
+                        {userLikedArticle ? '已按讚' : '按讚'}
+                    </Button>
                     <Button variant="outline" size="md" onClick={handleShare}>
                         <Share2 size={18} />
                         分享
@@ -208,18 +331,18 @@ export default function ArticleDetailPage() {
                         <Button
                             size="md"
                             disabled={submittingComment || !commentText.trim()}
-                            onClick={async () => {
-                                setSubmittingComment(true);
-                                try {
-                                    // 留言提交邏輯待實現
-                                    setCommentText('');
-                                } finally {
-                                    setSubmittingComment(false);
-                                }
-                            }}
+                            onClick={handleSubmitComment}
                         >
+                            <Send size={16} />
                             {submittingComment ? '提交中...' : '提交留言'}
                         </Button>
+                    </div>
+                )}
+
+                {/* Error Message */}
+                {error && (
+                    <div className={styles.errorMessage}>
+                        <p>{error}</p>
                     </div>
                 )}
 
@@ -243,10 +366,32 @@ export default function ArticleDetailPage() {
                                 </div>
                                 <p className={styles.commentContent}>{comment.content}</p>
                                 <div className={styles.commentFooter}>
-                                    <button className={styles.likeButton}>
-                                        <Heart size={14} />
+                                    <button
+                                        className={`${styles.likeButton} ${userLikedComments.has(comment.id) ? styles.liked : ''}`}
+                                        onClick={() => handleLikeComment(comment.id)}
+                                    >
+                                        <Heart size={14} fill={userLikedComments.has(comment.id) ? 'currentColor' : 'none'} />
                                         {comment.likes}
                                     </button>
+                                    {user?.uid === comment.authorId && (
+                                        <>
+                                            <button
+                                                className={styles.editButton}
+                                                onClick={() => {
+                                                    setEditingCommentId(comment.id);
+                                                    setEditingContent(comment.content);
+                                                }}
+                                            >
+                                                <Edit size={14} />
+                                            </button>
+                                            <button
+                                                className={styles.deleteButton}
+                                                onClick={() => handleDeleteComment(comment.id)}
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         ))

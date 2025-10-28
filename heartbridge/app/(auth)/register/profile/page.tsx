@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button, Input, Select, SelectOption } from '@/components/ui';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase/config';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { User as FirebaseUser } from 'firebase/auth';
 import { User, UserRole } from '@/lib/types';
 import styles from './page.module.css';
@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
     React.useEffect(() => {
         if (!authLoading && !firebaseUser) {
-            router.push('/auth/login');
+            router.push('/login');
         }
     }, [firebaseUser, authLoading, router]);
 
@@ -71,7 +71,7 @@ export default function ProfilePage() {
                 ageRange,
                 interest: interestList,
                 createAt: serverTimestamp(),
-                updateAt: new Date(),
+                updateAt: serverTimestamp(),
             };
 
             // 保存到 Firestore
@@ -232,3 +232,4 @@ export default function ProfilePage() {
         </div>
     );
 }
+

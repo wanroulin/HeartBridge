@@ -30,7 +30,7 @@ export default function EditArticlePage() {
 
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push('/auth/login');
+            router.push('/login');
         }
     }, [user, authLoading, router]);
 

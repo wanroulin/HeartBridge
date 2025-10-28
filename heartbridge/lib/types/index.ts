@@ -13,8 +13,8 @@ export interface User {
     };
     ageRange: string;
     interest: string[];
-    createAt: Date;
-    updateAt: Date;
+    createAt: any;
+    updateAt: any;
 }
 
 export interface Article {

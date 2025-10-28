@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui";
 import { useArticles } from '@/lib/hooks/useArticles';
 import styles from './page.module.css';
-import { Loader, Heart } from "lucide-react";
+import { Loader, Heart, MessageSquare } from "lucide-react";
 
 export default function SquarePage () {
     const { user, loading: authLoading } = useAuth();
@@ -15,7 +15,7 @@ export default function SquarePage () {
 
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push('/auth/login');
+            router.push('/login');
         }
     }, [ user, authLoading, router ]);
 
@@ -53,12 +53,17 @@ export default function SquarePage () {
                     { articles.map((article) => (
                         <div key={ article.id } className={ styles.articleCard }>
                             <div onClick={() => router.push(`/article/${article.id}`)} style={{ cursor: 'pointer'}}>
+                                <div className= {styles.meta}>
+                                    <span> {article.authorName} </span>
+                                </div>
                                 <h3>{article.title}</h3>
                                 <p>{article.content.substring(0, 100)}... </p>
-                                <div className= { styles.meta}>
-                                    <span> {article.authorName} </span>
-                                    <span> {article.commentCount} </span>
+
+                                <div className={styles.info}>
+                                    <span> <Heart size={16} /> {article.likes}</span>
+                                    <span> <MessageSquare size={16} /> {article.commentCount}</span>
                                 </div>
+                                
                             </div>
                         </div>
                     ))}

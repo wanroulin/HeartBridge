@@ -108,7 +108,7 @@ export function useComments(options: UseCommentsOptions = {}) {
                     content,
                     likes: 0,
                     createAt: serverTimestamp(),
-                    updateAt: new Date(),
+                    updateAt: serverTimestamp(),
                 };
 
                 const docRef = await addDoc(collection(db, 'comments'), newComment);
@@ -131,7 +131,7 @@ export function useComments(options: UseCommentsOptions = {}) {
                 const commentRef = doc(db, 'comments', commentId);
                 await updateDoc(commentRef, {
                     content,
-                    updateAt: new Date(),
+                    updateAt: serverTimestamp(),
                 });
             } catch (err) {
                 throw err instanceof Error ? err : new Error('更新留言失敗');
@@ -171,7 +171,7 @@ export function useComments(options: UseCommentsOptions = {}) {
                 if (commentToLike) {
                     await updateDoc(commentRef, {
                         likes: (commentToLike.likes || 0) + 1,
-                        updateAt: new Date(),
+                        updateAt: serverTimestamp(),
                     });
 
                     setComments((prev) =>

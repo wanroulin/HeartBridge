@@ -139,7 +139,7 @@ export function useArticles(options: UseArticlesOptions = {}) {
                     likes: 0,
                     commentCount: 0,
                     createAt: serverTimestamp(),
-                    updateAt: new Date(),
+                    updateAt: serverTimestamp(),
                 };
 
                 const docRef = await addDoc(collection(db, 'articles'), newArticle);
@@ -160,7 +160,7 @@ export function useArticles(options: UseArticlesOptions = {}) {
                 const articleRef = doc(db, 'articles', articleId);
                 await updateDoc (articleRef, {
                     ...updates,
-                    updateAt: new Date(),
+                    updateAt: serverTimestamp(),
                 });
             } catch (err) {
                 throw err instanceof Error ? err : new Error('更新文章失敗');

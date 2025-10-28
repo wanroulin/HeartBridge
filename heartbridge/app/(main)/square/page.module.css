@@ -56,9 +56,18 @@
 
 .meta {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    gap: 1.5rem;
     font-size: 0.875rem;
     color: var(--text-tertiary);
+    margin-bottom: 1rem;
+}
+
+.info {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.875 rem;
 }
 
 .empty {
