@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui';
-import { Heart, Loader, Edit, Trash2, MessageSquare } from 'lucide-react';
+import { Heart, Loader, Edit, Trash2, MessageSquare, Plus } from 'lucide-react';
 import { useArticles } from '@/lib/hooks/useArticles';
 import styles from './page.module.css';
 
@@ -48,10 +48,6 @@ export default function MyArticlesPage() {
             {/* Header */}
             <div className={styles.header}>
                 <h1>我的文章</h1>
-                <Button onClick={() => router.push('/square/new')}>
-                    <Heart size={20} />
-                    新增文章
-                </Button>
             </div>
 
             {/* Articles */}
@@ -66,16 +62,15 @@ export default function MyArticlesPage() {
                     <Heart size={48} />
                     <h2>還沒有文章</h2>
                     <p>開始分享您的想法吧！</p>
-                    <Button onClick={() => router.push('/square/new')}>
-                        新增文章
-                    </Button>
                 </div>
             ) : (
                 <div className={styles.articlesList}>
                     {articles.map((article) => (
                         <div key={article.id} className={styles.articleItem}>
-                            <div className={styles.articleContent}>
-                                <h3>{article.title}</h3>
+                            <div className={styles.articleContent}  onClick={() => router.push(`/article/${article.id}`)}>
+                                    <h3>
+                                        {article.title}
+                                    </h3>
                                 <p>{article.content.substring(0, 150)}...</p>
                                 <div className={styles.meta}>
                                     <span> <Heart size={16} /> {article.likes}</span>
@@ -102,6 +97,13 @@ export default function MyArticlesPage() {
                     ))}
                 </div>
             )}
+            <button
+                className={styles.fabBtn}
+                onClick={() => router.push('/square/new')}
+                aria-label="新增文章"
+            >
+                <Plus size={32} />
+            </button>
         </div>
     );
 }

@@ -115,7 +115,7 @@ export default function EditArticlePage() {
                     <h2>發生錯誤</h2>
                     <p>{error}</p>
                     <Link href="/square">
-                        <Button>返回廣場</Button>
+                        <ArrowLeft size={20} />
                     </Link>
                 </div>
             </div>

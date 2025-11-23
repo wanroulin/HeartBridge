@@ -66,7 +66,6 @@ export default function NewArticlePage() {
             <div className={styles.header}>
                 <Link href="/square" className={styles.backLink}>
                     <ArrowLeft size={20} />
-                    返回
                 </Link>
                 <h1>發佈新文章</h1>
             </div>

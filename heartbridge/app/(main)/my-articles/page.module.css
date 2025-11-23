@@ -1,3 +1,25 @@
+/* Floating Action Button */
+.fabBtn {
+    position: fixed;
+    right: 2.5rem;
+    bottom: 2.5rem;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border: none;
+    cursor: pointer;
+    z-index: 100;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.fabBtn:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
 .container {
     width: 100%;
 }

@@ -67,59 +67,12 @@ export default function LoginPage() {
                     <span>HeartBridge</span>
                 </div>
 
-                <h1>登入您的帳號</h1>
-                <p>歡迎回到 HeartBridge</p>
-
                 {/* Error Message */}
                 {error && (
                     <div className={styles.alert}>
                         <p>{error}</p>
                     </div>
                 )}
-
-                {/* Login Form */}
-                <form onSubmit={handleEmailLogin} className={styles.form}>
-                    <Input
-                        type="email"
-                        label="電子郵件"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        fullWidth
-                        required
-                    />
-
-                    <Input
-                        type="password"
-                        label="密碼"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        fullWidth
-                        required
-                    />
-
-                    <Button
-                        type="submit"
-                        size="lg"
-                        fullWidth
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <>
-                                <Loader size={18} className={styles.spinner} />
-                                登入中...
-                            </>
-                        ) : (
-                            '登入'
-                        )}
-                    </Button>
-                </form>
-
-                {/* Divider */}
-                <div className={styles.divider}>
-                    <span>或</span>
-                </div>
 
                 {/* Google Login */}
                 <Button
@@ -136,11 +89,6 @@ export default function LoginPage() {
                     />
                     使用 Google 登入
                 </Button>
-
-                {/* Signup Link */}
-                <p className={styles.signupLink}>
-                    沒有帳號？<Link href="/auth/register">立即註冊</Link>
-                </p>
 
                 {/* Footer */}
                 <p className={styles.footer}>

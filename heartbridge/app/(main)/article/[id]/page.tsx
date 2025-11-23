@@ -125,24 +125,21 @@ export default function ArticleDetailPage() {
             setCommentError('留言不能為空');
             return;
         }
-
         if (!user) {
             setError('請先登入');
             return;
         }
-
         setSubmittingComment(true);
         try {
             await createComment(articleId, commentText);
-
+            setCommentText('');
+            await fetchCommentsByArticle(articleId); // 重新載入留言
             // 更新文章的留言計數
             const articleRef = doc(db, 'articles', articleId);
             await updateDoc(articleRef, {
                 commentCount: increment(1),
                 updateAt: serverTimestamp(),
             });
-
-            setCommentText('');
             setArticle((prev) =>
                 prev ? { ...prev, commentCount: prev.commentCount + 1 } : null
             );
@@ -212,7 +209,7 @@ export default function ArticleDetailPage() {
                     <h2>發生錯誤</h2>
                     <p>{error || '文章載入失敗'}</p>
                     <Link href="/square">
-                        <Button>返回廣場</Button>
+                        <ArrowLeft size={20} />
                     </Link>
                 </div>
             </div>
@@ -227,7 +224,6 @@ export default function ArticleDetailPage() {
             <div className={styles.header}>
                 <Link href="/square" className={styles.backButton}>
                     <ArrowLeft size={20} />
-                    返回廣場
                 </Link>
             </div>
 
@@ -249,6 +245,11 @@ export default function ArticleDetailPage() {
                     </div>
                 </div>
 
+                {/* Content */}
+                <div className={styles.content}>
+                    {article.content}
+                </div>
+
                 {/* Tags */}
                 {article.tags && article.tags.length > 0 && (
                     <div className={styles.tags}>
@@ -259,11 +260,6 @@ export default function ArticleDetailPage() {
                         ))}
                     </div>
                 )}
-
-                {/* Content */}
-                <div className={styles.content}>
-                    {article.content}
-                </div>
 
                 {/* Stats */}
                 <div className={styles.stats}>
