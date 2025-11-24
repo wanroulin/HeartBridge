@@ -10,9 +10,10 @@ import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/fir
 import { Article } from '@/lib/types';
 import { formatDate, formatRelativeTime } from '@/lib/utils/date';
 import { formatRoleName } from '@/lib/utils/format';
-import { Heart, MessageCircle, Share2, Loader, ArrowLeft, Trash2, Edit } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Loader, ArrowLeft, Trash2, Edit, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css'
+import { saveArticle, unsaveArticle, isArticleSaved } from '@/lib/services/articleSaveService';
 
 export default function ArticleDetailPage() {
     const params = useParams();
@@ -24,7 +25,9 @@ export default function ArticleDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [userLikedArticle, setUserLikedArticle] = useState(false);
+    const [userSavedArticle, setUserSavedArticle] = useState(false);
     const [isLikingArticle, setIsLikingArticle] = useState(false);
+    const [isSavingArticle, setIsSavingArticle] = useState(false);
 
     const {
         comments,
@@ -57,6 +60,11 @@ export default function ArticleDetailPage() {
                     createAt: data.createAt?.toDate?.() || new Date(data.createAt),
                     updateAt: data.updateAt?.toDate?.() || new Date(data.updateAt),
                 } as Article);
+
+                if (user?.uid) {
+                    const saved = await isArticleSaved(user.uid, articleId);
+                    setUserSavedArticle(saved);
+                }
             } else {
                 setError('文章不存在');
             }
@@ -166,6 +174,32 @@ export default function ArticleDetailPage() {
             alert('複製連結：' + url);
         }
     };
+
+    const handleSaveArticle = async () => {
+        if (!article || !user) {
+            setError('請先登入');
+            return;
+        }
+
+        setIsSavingArticle(true);
+        try {
+            if (userSavedArticle) {
+                // 取消收藏
+                await unsaveArticle(user.uid, articleId);
+                setUserSavedArticle(false);
+            } else {
+                // 收藏文章
+                await saveArticle(user.uid, articleId);
+                setUserSavedArticle(true);
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : '收藏失敗');
+            console.error(err);
+        } finally {
+            setIsSavingArticle(false);
+        }
+    };
+
 
     if (loading) {
         return (
@@ -277,6 +311,20 @@ export default function ArticleDetailPage() {
                         <MessageCircle size={18} /> 
                         <span> {article.commentCount}</span>
                     </div>
+
+                    <button
+                        onClick={handleSaveArticle}
+                        disabled={isSavingArticle}
+                        className={`${styles.stat} ${styles.saveButton} ${
+                            userSavedArticle ? styles.saved : ''
+                        }`}
+                        title={userSavedArticle ? '取消收藏' : '收藏'}
+                    >
+                        <Bookmark
+                            size={18}
+                            fill={userSavedArticle ? 'currentColor' : 'none'}
+                        />
+                    </button>
                 </footer>
             </article>
 

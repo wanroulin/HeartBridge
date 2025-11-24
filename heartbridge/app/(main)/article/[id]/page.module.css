@@ -173,6 +173,16 @@
     font-weight: 500;
 }
 
+.saveButton {
+    margin-left: auto;
+    padding: 0.5rem;
+    min-width: 2.5rem;
+}
+
+.saveButton.saved {
+    color: var(--primary);
+}
+
 /* Comments Section */
 .commentsSection {
     background-color: var(--bg-secondary);
