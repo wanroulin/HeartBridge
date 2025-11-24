@@ -141,6 +141,16 @@
     margin-bottom: 1rem;
 }
 
+.role {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
 .info {
     display: flex;
     gap: 1.5rem;

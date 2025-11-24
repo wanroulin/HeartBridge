@@ -14,7 +14,8 @@ import {
     deleteDoc,
     doc,
     QueryConstraint,
-    serverTimestamp
+    serverTimestamp,
+    increment,
 } from 'firebase/firestore';
 import { Comment } from '@/lib/types';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,6 +29,7 @@ export function useComments(options: UseCommentsOptions = {}) {
     const { firebaseUser, user } = useAuth();
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     /**
@@ -47,14 +49,26 @@ export function useComments(options: UseCommentsOptions = {}) {
                 const q = query(collection(db, 'comments'), ...constraints);
                 const snapshot = await getDocs(q);
 
-                const commentsData = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                } as Comment));
+                const commentsData = snapshot.docs.map((doc) => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        articleId: data.articleId,
+                        authorId: data.authorId,
+                        authorName: data.authorName,
+                        authorRole: data.authorRole,
+                        content: data.content,
+                        likes: data.likes || 0,
+                        createAt: data.createAt?.toDate?.() || new Date(data.createAt),
+                        updateAt: data.updateAt?.toDate?.() || new Date(data.updateAt),
+                    } as Comment;
+                });
 
                 setComments(commentsData);
             } catch (err) {
-                setError(err instanceof Error ? err.message : '獲取留言失敗');
+                const message = err instanceof Error ? err.message : '獲取留言失敗';
+                setError(message);
+                console.error('Error fetching comments:', err);
             } finally {
                 setLoading(false);
             }
@@ -79,14 +93,26 @@ export function useComments(options: UseCommentsOptions = {}) {
             );
 
             const snapshot = await getDocs(q);
-            const commentsData = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            } as Comment));
+            const commentsData = snapshot.docs.map((doc) => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    articleId: data.articleId,
+                    authorId: data.authorId,
+                    authorName: data.authorName,
+                    authorRole: data.authorRole,
+                    content: data.content,
+                    likes: data.likes || 0,
+                    createAt: data.createAt?.toDate?.() || new Date(data.createAt),
+                    updateAt: data.updateAt?.toDate?.() || new Date(data.updateAt),
+                } as Comment;
+            });
 
             setComments(commentsData);
         } catch (err) {
-            setError(err instanceof Error ? err.message : '獲取留言失敗');
+            const message = err instanceof Error ? err.message : '獲取留言失敗';
+            setError(message);
+            console.error('Error fetching user comments:', err);
         } finally {
             setLoading(false);
         }
@@ -98,8 +124,22 @@ export function useComments(options: UseCommentsOptions = {}) {
     const createComment = useCallback(
         async (articleId: string, content: string) => {
             if (!firebaseUser || !user) throw new Error('使用者未授權');
+            if (!content.trim()) throw new Error('留言內容不能為空');
+
+            setIsSubmitting(true);
+            setError(null);
 
             try {
+                // 先進行內容審查
+                const { moderateContent } = await import('@/lib/ai/content-moderation');
+                const moderationResult = await moderateContent(content);
+
+                if (!moderationResult.isApproved && moderationResult.severity === 'high') {
+                    throw new Error(
+                        `您的留言包含不適合的內容。${moderationResult.suggestions.join('；')}`
+                    );
+                }
+
                 const newComment = {
                     articleId,
                     authorId: firebaseUser.uid,
@@ -112,9 +152,24 @@ export function useComments(options: UseCommentsOptions = {}) {
                 };
 
                 const docRef = await addDoc(collection(db, 'comments'), newComment);
+
+                // 添加到本地狀態以實現樂觀更新
+                const optimisticComment: Comment = {
+                    id: docRef.id,
+                    ...newComment,
+                    createAt: new Date(),
+                    updateAt: new Date(),
+                } as Comment;
+
+                setComments((prev) => [optimisticComment, ...prev]);
+
                 return docRef.id;
             } catch (err) {
-                throw err instanceof Error ? err : new Error('建立留言失敗');
+                const message = err instanceof Error ? err.message : '建立留言失敗';
+                setError(message);
+                throw err;
+            } finally {
+                setIsSubmitting(false);
             }
         },
         [firebaseUser, user]
@@ -126,15 +181,37 @@ export function useComments(options: UseCommentsOptions = {}) {
     const updateComment = useCallback(
         async (commentId: string, content: string) => {
             if (!firebaseUser) throw new Error('使用者未授權');
+            if (!content.trim()) throw new Error('留言內容不能為空');
+
+            setError(null);
 
             try {
+                // 先進行內容審查
+                const { moderateContent } = await import('@/lib/ai/content-moderation');
+                const moderationResult = await moderateContent(content);
+
+                if (!moderationResult.isApproved && moderationResult.severity === 'high') {
+                    throw new Error(
+                        `您的留言包含不適合的內容。${moderationResult.suggestions.join('；')}`
+                    );
+                }
+
                 const commentRef = doc(db, 'comments', commentId);
                 await updateDoc(commentRef, {
                     content,
                     updateAt: serverTimestamp(),
                 });
+
+                // 本地更新
+                setComments((prev) =>
+                    prev.map((c) =>
+                        c.id === commentId ? { ...c, content, updateAt: new Date() } : c
+                    )
+                );
             } catch (err) {
-                throw err instanceof Error ? err : new Error('更新留言失敗');
+                const message = err instanceof Error ? err.message : '更新留言失敗';
+                setError(message);
+                throw err;
             }
         },
         [firebaseUser]
@@ -147,13 +224,18 @@ export function useComments(options: UseCommentsOptions = {}) {
         async (commentId: string) => {
             if (!firebaseUser) throw new Error('使用者未授權');
 
+            setError(null);
+
             try {
                 const commentRef = doc(db, 'comments', commentId);
                 await deleteDoc(commentRef);
 
+                // 本地更新
                 setComments((prev) => prev.filter((comment) => comment.id !== commentId));
             } catch (err) {
-                throw err instanceof Error ? err : new Error('刪除留言失敗');
+                const message = err instanceof Error ? err.message : '刪除留言失敗';
+                setError(message);
+                throw err;
             }
         },
         [firebaseUser]
@@ -164,16 +246,19 @@ export function useComments(options: UseCommentsOptions = {}) {
      */
     const likeComment = useCallback(
         async (commentId: string) => {
+            setError(null);
+
             try {
                 const commentRef = doc(db, 'comments', commentId);
                 const commentToLike = comments.find((c) => c.id === commentId);
 
                 if (commentToLike) {
                     await updateDoc(commentRef, {
-                        likes: (commentToLike.likes || 0) + 1,
+                        likes: increment(1),
                         updateAt: serverTimestamp(),
                     });
 
+                    // 本地樂觀更新
                     setComments((prev) =>
                         prev.map((c) =>
                             c.id === commentId ? { ...c, likes: (c.likes || 0) + 1 } : c
@@ -181,7 +266,9 @@ export function useComments(options: UseCommentsOptions = {}) {
                     );
                 }
             } catch (err) {
-                throw err instanceof Error ? err : new Error('點讚失敗');
+                const message = err instanceof Error ? err.message : '點讚失敗';
+                setError(message);
+                console.error('Error liking comment:', err);
             }
         },
         [comments]
@@ -190,6 +277,7 @@ export function useComments(options: UseCommentsOptions = {}) {
     return {
         comments,
         loading,
+        isSubmitting,
         error,
         fetchCommentsByArticle,
         fetchUserComments,

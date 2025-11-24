@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui';
-import { Heart, Loader, Edit, Trash2, MessageSquare, Plus } from 'lucide-react';
+import { Heart, Loader, Edit, Trash2, MessageCircle, Plus } from 'lucide-react';
 import { useArticles } from '@/lib/hooks/useArticles';
 import styles from './page.module.css';
 
@@ -74,7 +74,7 @@ export default function MyArticlesPage() {
                                 <p>{article.content.substring(0, 150)}...</p>
                                 <div className={styles.meta}>
                                     <span> <Heart size={16} /> {article.likes}</span>
-                                    <span> <MessageSquare size={16} /> {article.commentCount}</span>
+                                    <span> <MessageCircle size={16} /> {article.commentCount}</span>
                                 </div>
                             </div>
                             <div className={styles.actions}>

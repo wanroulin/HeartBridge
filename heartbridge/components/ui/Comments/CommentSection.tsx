@@ -78,9 +78,9 @@ export function CommentSection({
 
   const getRoleBadge = (role: UserRole) => {
     if (role === 'parent') {
-      return { text: '我是家長', className: styles.authorBadge + ' ' + styles.parent };
+      return { text: '家長', className: styles.authorBadge + ' ' + styles.parent };
     } else {
-      return { text: '我是青少年', className: styles.authorBadge + ' ' + styles.teen };
+      return { text: '青少年', className: styles.authorBadge + ' ' + styles.teen };
     }
   };
 
@@ -94,7 +94,9 @@ export function CommentSection({
           </div>
         ) : comments.length === 0 ? (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>💬</div>
+            <div className={styles.emptyIcon}>
+                <MessageCircle size={24} />
+            </div>
             <div className={styles.emptyText}>
               還沒有留言，成為第一個分享想法的人吧
             </div>
@@ -110,7 +112,6 @@ export function CommentSection({
                 <div className={styles.commentHeader}>
                   <div className={styles.authorInfo}>
                     <span className={badge.className}>{badge.text}</span>
-                    <span className={styles.authorName}>{comment.authorName}</span>
                     <span className={styles.commentTime}>
                       {formatTime(comment.createAt)}
                     </span>
@@ -139,15 +140,15 @@ export function CommentSection({
                     title="按讚"
                   >
                     <Heart
-                      size={16}
+                      size={18}
                       fill={isLiked ? 'currentColor' : 'none'}
                     />
                     <span>{comment.likes}</span>
                   </button>
 
                   <button className={styles.replyButton} title="回覆">
-                    <MessageCircle size={16} />
-                    <span>回覆</span>
+                    <MessageCircle size={18} />
+                    <span>則回覆</span>
                   </button>
                 </div>
               </div>
@@ -178,9 +179,6 @@ export function CommentSection({
           </div>
 
           <div className={styles.buttonGroup}>
-            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-              發言者身份: {currentUserRole === 'parent' ? '我是家長' : '我是青少年'}
-            </span>
             <button
               type="submit"
               className={styles.submitButton}
