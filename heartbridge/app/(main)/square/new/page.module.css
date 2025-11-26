@@ -63,6 +63,177 @@
     text-align: right;
 }
 
+.tagsInputWrapper {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.tagInput {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+    min-height: 2.5rem;
+}
+
+.tagInput:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(139, 125, 158, 0.1);
+}
+
+.tagInput::placeholder {
+    color: var(--text-tertiary);
+}
+
+.tagInputField {
+    flex: 1;
+    min-width: 100px;
+    padding: 0;
+    border: none;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background-color: transparent;
+    outline: none;
+}
+
+.tagInputField::placeholder {
+    color: var(--text-tertiary);
+}
+
+.tagsDisplay {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* 🔑 AI 標籤生成按鈕 */
+.aiTagButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--primary);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.aiTagButton:hover:not(:disabled) {
+    background-color: var(--primary);
+    opacity: 0.9;
+    box-shadow: 0 2px 8px rgba(139, 125, 158, 0.3);
+    transform: translateY(-1px);
+}
+
+.aiTagButton:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.aiTagButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.aiTagButton .spinner {
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 🔑 標籤列表 */
+.tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 🔑 單個標籤 - 圓角背景 + 刪除按鈕 */
+.tagItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--bg-tertiary);
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    animation: slideIn 0.2s ease-out;
+    font-size: 0.8rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 標籤文本 */
+.tagText {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* 刪除按鈕 */
+.tagDeleteBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.tagDeleteBtn:hover {
+    background-color: rgba(139, 125, 158, 0.2);
+    color: var(--text-primary);
+}
+
+.tagDeleteBtn:active {
+    transform: scale(0.95);
+}
+
+/* 標籤標籤文字 */
+.label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
 .actions {
     display: flex;
     gap: 1rem;
@@ -133,6 +304,32 @@
 
     .header h1 {
         font-size: 1.5rem;
+    }
+
+       .tagsInputWrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tagInput {
+        width: 100%;
+    }
+
+    .aiTagButton {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tagsList {
+        gap: 0.4rem;
+    }
+
+    .tagItem {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .tagText {
+        font-size: 0.85rem;
     }
 
     .actions {

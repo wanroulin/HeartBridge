@@ -7,7 +7,7 @@ import { Button, Input, Textarea } from '@/components/ui';
 import { useAuth } from '@/contexts/AuthContext';
 import { useArticles } from '@/lib/hooks/useArticles';
 import { isValidArticleTitle, isValidArticleContent, cleanTags } from '@/lib/utils/validation';
-import { Heart, Loader, ArrowLeft } from 'lucide-react';
+import { Heart, Loader, ArrowLeft, Wand2, X } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function NewArticlePage() {
@@ -17,9 +17,11 @@ export default function NewArticlePage() {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [tags, setTags] = useState('');
+    const [tagInput, setTagInput] = useState('');
+    const [tags, setTags] = useState<string[]>([]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [generatingTags, setGeneratingTags] = useState(false);
 
     React.useEffect(() => {
         if (!authLoading && !user) {
@@ -27,18 +29,91 @@ export default function NewArticlePage() {
         }
     }, [user, authLoading, router]);
 
+    // 🔑 處理標籤輸入 - 空格觸發添加標籤
+    const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        
+        // 檢查是否有空格
+        if (value.includes(' ')) {
+            const parts = value.split(' ');
+            // 最後一個是空的（因為末尾是空格），其他的是標籤
+            const newTags = parts.slice(0, -1).filter(tag => tag.trim().length > 0);
+            
+            if (newTags.length > 0) {
+                // 添加新標籤（去重）
+                const uniqueTags = [...new Set([...tags, ...newTags])].slice(0, 10);
+                setTags(uniqueTags);
+                setTagInput(''); // 清空輸入框
+            }
+        } else {
+            setTagInput(value);
+        }
+    };
+
+    // 🔑 刪除標籤
+    const removeTag = (indexToRemove: number) => {
+        setTags(tags.filter((_, index) => index !== indexToRemove));
+    };
+
+    // 🔑 生成 AI 標籤
+    const handleGenerateTags = async () => {
+        if (!title.trim() && !content.trim()) {
+            setError('請先輸入標題或內容');
+            return;
+        }
+
+        setGeneratingTags(true);
+        setError('');
+
+        try {
+            console.log('🤖 調用 AI 生成標籤...');
+
+            const response = await fetch('/api/ai/generate-tags', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: title.trim(),
+                    content: content.trim(),
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`API 錯誤: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.tags && Array.isArray(data.tags) && data.tags.length > 0) {
+                // 合併新標籤（去重且限制 10 個）
+                const allTags = [...new Set([...tags, ...data.tags])].slice(0, 10);
+                setTags(allTags);
+
+                console.log('✅ AI 標籤已生成:', allTags);
+            } else {
+                setError('AI 未能生成標籤，請稍後重試');
+            }
+        } catch (err) {
+            console.error('❌ 生成標籤失敗:', err);
+            setError(
+                err instanceof Error ? err.message : '生成標籤失敗，請檢查你的網路連接'
+            );
+        } finally {
+            setGeneratingTags(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
 
-        const tagList = cleanTags(tags.split(','));
-
         try {
             const articleId = await createArticle({
                 title: title.trim(),
                 content: content.trim(),
-                tags: tagList,
+                tags: tags, // 直接使用標籤陣列
                 authorName: user?.role || 'teen',
                 authorId: user?.uid || 'defaultId',
             });
@@ -118,16 +193,63 @@ export default function NewArticlePage() {
                     </p>
                 </div>
 
-                {/* Tags */}
-                <Input
-                    type="text"
-                    label="標籤 (可選)"
-                    placeholder="以逗號分隔多個標籤 (例：親子,溝通,教養)"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    fullWidth
-                    helperText="最多 10 個標籤，每個最多 50 個字符"
-                />
+                {/* 🔑 Tags Section - 標籤輸入和按鈕在同一行 */}
+                <div>
+                    <label className={styles.label}>標籤 (可選)</label>
+                    
+                    <div className={styles.tagsInputWrapper}>
+                        <div className={styles.tagInput}>
+                            {tags.length > 0 && (
+                                <div className={styles.tagsDisplay}>
+                                    {tags.map((tag, index) => (
+                                        <div key={index} className={styles.tagItem}>
+                                            <span className={styles.tagText}>{tag}</span>
+                                            <button
+                                                type="button"
+                                                className={styles.tagDeleteBtn}
+                                                onClick={() => removeTag(index)}
+                                                aria-label={`刪除標籤 ${tag}`}
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <input
+                                type="text"
+                                className={styles.tagInputField}
+                                placeholder={tags.length === 0 ? "輸入標籤後按空格添加..." : ""}
+                                value={tagInput}
+                                onChange={handleTagInputChange}
+                            />
+                        </div>
+                        
+                        <button
+                            type="button"
+                            className={styles.aiTagButton}
+                            onClick={handleGenerateTags}
+                            disabled={generatingTags || (!title.trim() && !content.trim())}
+                            title="使用 AI 根據內容生成標籤"
+                        >
+                            {generatingTags ? (
+                                <>
+                                    <Loader size={16} className={styles.spinner} />
+                                    <span>生成中...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Wand2 size={16} />
+                                    <span>AI 生成標籤</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+
+                    <p className={styles.hint}>
+                        {tags.length}/10 個標籤
+                    </p>
+                </div>
 
                 {/* Actions */}
                 <div className={styles.actions}>
@@ -143,9 +265,7 @@ export default function NewArticlePage() {
                                 發佈中...
                             </>
                         ) : (
-                            <>
-                                發佈文章
-                            </>
+                            <>發佈文章</>
                         )}
                     </Button>
 
@@ -167,7 +287,7 @@ export default function NewArticlePage() {
                     <ul>
                         <li>請確保標題清晰、能吸引讀者</li>
                         <li>詳細描述你的想法和經驗</li>
-                        <li>使用適當的標籤方便其他人搜尋</li>
+                        <li>輸入標籤後按空格添加，或使用 AI 生成標籤</li>
                         <li>尊重他人，避免使用攻擊性語言</li>
                         <li>分享真實想法，幫助建立理解橋樑</li>
                     </ul>
