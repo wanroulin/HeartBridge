@@ -3,10 +3,56 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: white;
+  background-color: var(--bg-primary);
 }
 
-/* 留言列表區域 */
+/* ========== 留言區標題 ========== */
+.commentsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+.commentsTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.aiSummaryButton {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.aiSummaryButton:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.aiSummaryButton:active {
+  transform: translateY(0);
+}
+
+/* ========== 留言列表區域 ========== */
 .commentsWrapper {
   flex: 1;
   overflow-y: auto;
@@ -49,8 +95,8 @@
 }
 
 .authorBadge.parent {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: rgba(139, 125, 158, 0.2);
+  color: #8b7d9e;
 }
 
 .authorBadge.teen {
@@ -145,7 +191,133 @@
   background-color: var(--bg-secondary);
 }
 
-/* 空留言狀態 */
+/* ========== 回覆功能 ========== */
+.replyInputWrapper {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.replyTextarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: none;
+  min-height: 60px;
+  max-height: 150px;
+  transition: all 0.2s ease;
+  outline: none;
+  margin-bottom: 0.75rem;
+}
+
+.replyTextarea:hover {
+  border-color: var(--text-tertiary);
+}
+
+.replyTextarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 125, 158, 0.1);
+}
+
+.replyTextarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.replyTextarea:disabled {
+  background-color: var(--bg-tertiary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.replyActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.charCount.exceeded {
+  color: var(--error);
+}
+
+.replyButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.submitReplyButton {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitReplyButton:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.submitReplyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelReplyButton {
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelReplyButton:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* ========== 回覆列表 - 關鍵：嵌套結構 ========== */
+.replies {
+  margin-left: 2rem;
+  margin-top: 0.75rem;
+  border-left: 3px solid var(--primary);
+  padding-left: 1.5rem;
+}
+
+.replyComment {
+  padding: 1rem 0;
+  border-bottom: none;
+  background-color: transparent;
+}
+
+.replyComment:hover {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin: 0 -1rem;
+  padding-left: calc(1rem - 1.5rem);
+}
+
+/* ========== 空留言狀態 ========== */
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -167,14 +339,14 @@
   font-size: 0.95rem;
 }
 
-/* 留言框區域 */
+/* ========== 留言框區域 ========== */
 .inputWrapper {
   padding: 1.5rem;
   border-top: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
-  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .inputContainer {
@@ -190,7 +362,6 @@
 }
 
 .textarea {
-  display: flex;
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -200,7 +371,8 @@
   font-size: 0.95rem;
   line-height: 1.5;
   resize: none;
-  max-height: 80px;
+  min-height: 80px;
+  max-height: 200px;
   transition: all 0.2s ease;
   outline: none;
 }
@@ -222,16 +394,6 @@
   background-color: var(--bg-tertiary);
   cursor: not-allowed;
   opacity: 0.6;
-}
-
-.charCount {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  text-align: right;
-}
-
-.charCount.exceeded {
-  color: var(--error);
 }
 
 .buttonGroup {
@@ -267,12 +429,95 @@
   cursor: not-allowed;
 }
 
+/* ========== AI 模態框 ========== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.aiModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.aiModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.aiModalHeader h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.aiModalHeader button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.aiModalHeader button:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.aiModalContent {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--bg-secondary);
+}
+
+.statsBox {
+  background-color: var(--bg-primary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary);
+  margin-bottom: 1rem;
+}
+
+.statsBox p {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.statsBox strong {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
 /* 載入狀態 */
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  flex: 1;
 }
 
 .spinner {
@@ -293,32 +538,30 @@
   }
 }
 
-/* 回覆留言（巢狀） */
-.replies {
-  margin-left: 2rem;
-  margin-top: 0.75rem;
-  border-left: 2px solid var(--border-color);
-  padding-left: 1rem;
-}
-
-.replyComment {
-  padding: 1rem 0;
-  border-bottom: none;
-}
-
-.replyComment:hover {
-  background-color: transparent;
-}
-
-/* 響應式設計 */
+/* ========== 響應式設計 ========== */
 @media (max-width: 768px) {
+  .commentsHeader {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  .commentsTitle {
+    font-size: 1.1rem;
+  }
+
+  .aiSummaryButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
   .comment {
     padding: 1rem;
   }
 
   .replies {
     margin-left: 1rem;
-    padding-left: 0.75rem;
+    padding-left: 1rem;
+    border-left-width: 2px;
   }
 
   .inputWrapper {
@@ -329,6 +572,10 @@
     min-height: 70px;
   }
 
+  .replyTextarea {
+    min-height: 50px;
+  }
+
   .buttonGroup {
     flex-direction: column;
     align-items: stretch;
@@ -336,5 +583,56 @@
 
   .submitButton {
     width: 100%;
+  }
+
+  .replyActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .replyButtons {
+    width: 100%;
+  }
+
+  .submitReplyButton,
+  .cancelReplyButton {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .commentsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .aiSummaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .comment {
+    padding: 0.75rem;
+  }
+
+  .commentHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .replies {
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  .inputWrapper {
+    padding: 0.75rem;
+  }
+
+  .aiModal {
+    width: 95%;
+    max-width: none;
   }
 }
