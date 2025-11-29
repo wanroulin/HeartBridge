@@ -39,12 +39,12 @@ export default function HomePage() {
                     <Link href="#features">功能特色</Link>
                 </nav>
                 <div className={styles.headerActions}>
-                    <Link href="/auth/login">
+                    <Link href="/login">
                         <Button variant="outline" size="md">
                             登入
                         </Button>
                     </Link>
-                    <Link href="/auth/register">
+                    <Link href="/register">
                         <Button size="md">
                             開始使用
                         </Button>
@@ -61,7 +61,7 @@ export default function HomePage() {
                         幫助家長和青少年理解彼此，建立更良好的親子關係。
                     </p>
                     <div className={styles.heroActions}>
-                        <Link href="/auth/register">
+                        <Link href="/register">
                             <Button size="lg">開始免費體驗</Button>
                         </Link>
                         <Link href="#features">
@@ -129,7 +129,7 @@ export default function HomePage() {
             {/* CTA Section */}
             <section className={styles.cta}>
                 <h2>準備好連結親子關係了嗎？</h2>
-                <Link href="/auth/register">
+                <Link href="/register">
                     <Button size="lg">加入 HeartBridge</Button>
                 </Link>
             </section>

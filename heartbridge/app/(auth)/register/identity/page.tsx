@@ -102,7 +102,7 @@ export default function IdentityPage() {
                             繼續
                         </Button>
                         <p className={styles.backLink}>
-                            <Link href="/auth/login">回到登入</Link>
+                            <Link href="/login">回到登入</Link>
                         </p>
                     </div>
                 </div>
